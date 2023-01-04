@@ -1,0 +1,59 @@
+﻿@model IEnumerable<MovieProject.Repository.Entities.MovieModel>
+@{
+    ViewData["Title"] = "Movie Index";
+}
+
+<h1>@ViewData["Title"]</h1>
+@Html.ActionLink("+ เพิ่ม", "Create", "Movie", null, new { @class = "btn btn-primary", @style = "margin-bottom: 20px;"}) @*เพิ่มปุ่ม ไว้สำหรับกดเพื่อไปหน้า Create*@
+<br />
+<table class="table">
+    <tr>
+        <th>รหัสภาพยนต์</th>
+        <th>ชื่อภาพยนต์</th>
+        <th>รูป</th>
+        <th>เข้าฉายเมื่อ</th>
+        <th>หมวดหมู่</th>
+        <th>ความยาว (นาที)</th>
+        <th>แก้ไข</th>
+        <th>ลบ</th>
+    </tr>
+    @foreach (var item in Model) //ใช้ foreach เรียกข้อมูลจากในตาราง มาแสดง
+    {
+        <tr>
+            <td class="item-id">@item.id</td>
+                <td>@item.title</td>
+                <td>
+                    <img src="@item.coverImg" height="80px"/>
+                </td>
+                <td>@item.releaseDate</td>
+                <td>@item.genre</td>
+                <td>@item.duration</td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new {id = item.id}, new { id = item.id, @class ="btn btn-primary", @style = "margin-bottom: 20px;"}) @*ปุ่ม Edit*@
+                </td>
+                <td>
+                    <input type="button" value="Delete" class="btn btn-danger" /> @*ปุ่ม delete*@
+                </td>
+            </tr>
+        }
+</table>
+@using (Html.BeginForm("delete", "movie", FormMethod.Post, new { name = "frmMovie", id = "frmMovie" }))
+{
+    <input type="hidden" name="id" />
+    //Input type=Hidden: เตรียม Input ที่เป็น Hidden สำหรับการรับค่า id ของ Row นั้น ๆ จากปุ่ม Delete
+}
+
+@section Scripts
+    {
+    <script>
+        //JavaScript event btn-danger เมื่อกดปุ่ม Delete แสดงยืนยันการลบ
+        $(".btn-danger").click(function () {
+            if (!confirm('Do you really want to delete this movie?')) {
+                return false;
+            }
+            var id = $(this).closest("tr").find(".item-id").text();
+            document.frmMovie.id.value = id;
+            document.getElementById("frmMovie").submit();
+        });
+    </script>
+}
